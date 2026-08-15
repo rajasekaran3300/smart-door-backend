@@ -16,6 +16,8 @@ import com.smartdoor.security.repository.HouseRepository;
 import com.smartdoor.security.repository.UserRepository;
 import com.smartdoor.security.service.DoorEventService;
 import com.smartdoor.security.service.NotificationService;
+import com.smartdoor.security.utility.DateTimeUtil;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,7 +45,8 @@ public class DoorEventServiceImpl implements DoorEventService {
         DoorDevice device = doorDeviceRepository.findByDeviceCode(request.getDeviceCode())
                 .orElseThrow(() -> new InvalidDeviceException("Unknown device code"));
 
-        // Device authenticates with a shared secret instead of a JWT — it's a headless ESP32, not a logged-in user.
+        // Device authenticates with a shared secret instead of a JWT — it's a headless
+        // ESP32, not a logged-in user.
         if (!device.getDeviceSecret().equals(request.getDeviceSecret())) {
             throw new InvalidDeviceException("Invalid device secret");
         }
@@ -58,8 +61,9 @@ public class DoorEventServiceImpl implements DoorEventService {
             throw new InvalidDeviceException("Status must be OPEN or CLOSED");
         }
 
-        LocalDateTime eventTime = request.getEventTime() != null ? request.getEventTime() : LocalDateTime.now();
-
+        LocalDateTime eventTime = request.getEventTime() != null
+                ? request.getEventTime()
+                : DateTimeUtil.now();
         DoorEvent event = DoorEvent.builder()
                 .device(device)
                 .status(status)
@@ -67,7 +71,7 @@ public class DoorEventServiceImpl implements DoorEventService {
                 .build();
         event = doorEventRepository.save(event);
 
-        device.setLastSeenAt(LocalDateTime.now());
+        device.setLastSeenAt(DateTimeUtil.now());
         doorDeviceRepository.save(device);
 
         // *** The single rule that matters: notify ONLY on OPEN, never on CLOSE. ***

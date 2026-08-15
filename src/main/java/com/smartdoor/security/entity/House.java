@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
 
+import com.smartdoor.security.utility.DateTimeUtil;
+
 @Entity
 @Table(name = "house")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
@@ -25,6 +27,6 @@ public class House {
 
     @PrePersist
     protected void onCreate() {
-        createdAt = LocalDateTime.now();
+        createdAt = DateTimeUtil.now();
     }
 }

@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
 
+import com.smartdoor.security.utility.DateTimeUtil;
+
 @Entity
 @Table(name = "door_device")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
@@ -39,6 +41,6 @@ public class DoorDevice {
 
     @PrePersist
     protected void onCreate() {
-        createdAt = LocalDateTime.now();
+        createdAt = DateTimeUtil.now();
     }
 }

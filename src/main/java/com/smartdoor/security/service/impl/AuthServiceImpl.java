@@ -15,6 +15,8 @@ import com.smartdoor.security.repository.RefreshTokenRepository;
 import com.smartdoor.security.repository.UserRepository;
 import com.smartdoor.security.security.JwtTokenProvider;
 import com.smartdoor.security.service.AuthService;
+import com.smartdoor.security.utility.DateTimeUtil;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -79,7 +81,7 @@ public class AuthServiceImpl implements AuthService {
         RefreshToken storedToken = refreshTokenRepository.findByToken(request.getRefreshToken())
                 .orElseThrow(() -> new UnauthorizedException("Invalid refresh token"));
 
-        if (storedToken.getRevoked() || storedToken.getExpiresAt().isBefore(LocalDateTime.now())) {
+        if (storedToken.getRevoked() || storedToken.getExpiresAt().isBefore(DateTimeUtil.now())) {
             throw new UnauthorizedException("Refresh token expired or revoked");
         }
 
@@ -104,7 +106,7 @@ public class AuthServiceImpl implements AuthService {
         RefreshToken refreshToken = RefreshToken.builder()
                 .user(user)
                 .token(refreshTokenValue)
-                .expiresAt(LocalDateTime.now().plusSeconds(jwtTokenProvider.getRefreshTokenExpirationMs() / 1000))
+                .expiresAt(DateTimeUtil.now().plusSeconds(jwtTokenProvider.getRefreshTokenExpirationMs() / 1000))
                 .revoked(false)
                 .build();
         refreshTokenRepository.save(refreshToken);

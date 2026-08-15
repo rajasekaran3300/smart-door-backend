@@ -9,6 +9,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.smartdoor.security.utility.DateTimeUtil;
+
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -57,8 +59,7 @@ public class GlobalExceptionHandler {
                 .collect(Collectors.toMap(
                         FieldError::getField,
                         fe -> fe.getDefaultMessage() == null ? "Invalid value" : fe.getDefaultMessage(),
-                        (a, b) -> a
-                ));
+                        (a, b) -> a));
         return build(HttpStatus.BAD_REQUEST, "Validation failed", req, fieldErrors);
     }
 
@@ -68,14 +69,13 @@ public class GlobalExceptionHandler {
     }
 
     private ResponseEntity<ApiError> build(HttpStatus status, String message,
-                                            HttpServletRequest req, Map<String, String> fieldErrors) {
+            HttpServletRequest req, Map<String, String> fieldErrors) {
         ApiError error = ApiError.builder()
                 .status(status.value())
                 .error(status.getReasonPhrase())
                 .message(message)
                 .path(req.getRequestURI())
-                .timestamp(LocalDateTime.now())
-                .fieldErrors(fieldErrors == null ? new HashMap<>() : fieldErrors)
+                .timestamp(DateTimeUtil.now()).fieldErrors(fieldErrors == null ? new HashMap<>() : fieldErrors)
                 .build();
         return ResponseEntity.status(status).body(error);
     }
