@@ -31,7 +31,7 @@ app:
     access-token-expiration-ms: 86400000        # 24 hours
     refresh-token-expiration-ms: 604800000    # 7 days
   cors:
-    allowed-origins: ${CORS_ORIGINS:http://localhost:4200}
+    allowed-origins: ${CORS_ORIGINS:https://smart-door-frontend-cyan.vercel.app,https://smart-door-frontend-j7cg0gb3i-rajasekaran.vercel.app}
 
 springdoc:
   swagger-ui:
