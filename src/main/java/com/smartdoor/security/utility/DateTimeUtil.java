@@ -1,5 +1,6 @@
 package com.smartdoor.security.utility;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -25,6 +26,13 @@ public final class DateTimeUtil {
      */
     public static LocalDateTime now() {
         return LocalDateTime.now(INDIA_ZONE);
+    }
+
+    /**
+     * Returns the current date in IST.
+     */
+    public static LocalDate today() {
+        return LocalDate.now(INDIA_ZONE);
     }
 
     public static String formatDate(LocalDateTime dateTime) {

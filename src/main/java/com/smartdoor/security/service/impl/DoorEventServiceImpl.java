@@ -96,8 +96,9 @@ public class DoorEventServiceImpl implements DoorEventService {
                 .findTopByDeviceIdAndStatusOrderByEventTimeDesc(device.getId(), DoorEvent.DoorStatus.CLOSED)
                 .map(DoorEvent::getEventTime).orElse(null);
 
-        LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
-        LocalDateTime endOfDay = LocalDate.now().atTime(LocalTime.MAX);
+        LocalDate today = DateTimeUtil.today();
+        LocalDateTime startOfDay = today.atStartOfDay();
+        LocalDateTime endOfDay = today.atTime(LocalTime.MAX);
 
         Long openCount = doorEventRepository.countByDeviceIdAndStatusAndEventTimeBetween(
                 device.getId(), DoorEvent.DoorStatus.OPEN, startOfDay, endOfDay);
@@ -131,7 +132,8 @@ public class DoorEventServiceImpl implements DoorEventService {
 
     @Override
     public List<DoorHistoryResponse> getTodayHistory(String username) {
-        return getHistory(username, LocalDate.now(), LocalDate.now());
+        LocalDate today = DateTimeUtil.today();
+        return getHistory(username, today, today);
     }
 
     private DoorDevice getPrimaryDeviceForUser(String username) {
